@@ -6,7 +6,7 @@ const PostSchema = new Schema({
   title: { type: String, required: true },
   text: { type: String, required: true },
   timestamp: { type: Date, required: true },
-  author_id: { type: Schema.Types.ObjectId, ref: 'User' },
+  author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   isPublished: { type: Boolean, required: true },
 });
 
@@ -14,4 +14,4 @@ const PostSchema = new Schema({
 
 // });
 
-module.exports = mongoose.model('User', PostSchema);
+module.exports = mongoose.model('Post', PostSchema);
