@@ -39,5 +39,16 @@ exports.post_delete = asyncHandler(async (req, res, next) => {
 
 // Update a blog post
 exports.post_update = asyncHandler(async (req, res, next) => {
-  res.send(`POST UPDATE ID ${req.params.postId}`);
+  const user = await User.findOne().exec();
+  const post = new Post({
+    title: req.body.title,
+    text: req.body.text,
+    timestamp: new Date(),
+    author_id: user._id,
+    isPublished: req.body.isPublished,
+    _id: req.params.postId,
+  });
+
+  await Post.findByIdAndUpdate(req.params.postId, post, {});
+  res.send(post);
 });
