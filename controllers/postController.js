@@ -12,3 +12,18 @@ exports.post_get = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.postId).exec();
   return res.send(post);
 });
+
+// Create a new blog post
+exports.post_create = asyncHandler(async (req, res, next) => {
+  res.send('POST CREATE');
+});
+
+// Delete a blog post (and all associated comments)
+exports.post_delete = asyncHandler(async (req, res, next) => {
+  res.send(`POST DELETE ID ${req.params.postId}`);
+});
+
+// Update a blog post
+exports.post_update = asyncHandler(async (req, res, next) => {
+  res.send(`POST UPDATE ID ${req.params.postId}`);
+});
