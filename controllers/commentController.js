@@ -47,5 +47,21 @@ exports.comment_delete = asyncHandler(async (req, res, next) => {
 
 // Update a comment on a post
 exports.comment_update = asyncHandler(async (req, res, next) => {
-  res.send(`COMMENT UPDATE ID ${req.params.commentId}`);
+  const comment = await Comment.findById(req.params.commentId).exec();
+  if (comment.post_id.toString() === req.params.postId) {
+    const updatedComment = new Comment({
+      text: req.body.text,
+      timestamp: comment.timestamp,
+      display_name: comment.display_name,
+      post_id: comment.post_id,
+      _id: req.params.commentId,
+    });
+
+    await Comment.findByIdAndUpdate(req.params.commentId, updatedComment, {});
+    res.send(updatedComment);
+  } else {
+    const err = new Error('Invalid "postId" provided in path');
+    err.status = 404;
+    return next(err);
+  }
 });
