@@ -1,5 +1,4 @@
 const Comment = require('../models/comment');
-const Post = require('../models/post');
 const asyncHandler = require('express-async-handler');
 
 // Display all api comments on post
