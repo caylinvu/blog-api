@@ -1,4 +1,5 @@
 const Comment = require('../models/comment');
+const Post = require('../models/post');
 const asyncHandler = require('express-async-handler');
 
 // Display all api comments on post
@@ -15,7 +16,15 @@ exports.comment_get = asyncHandler(async (req, res, next) => {
 
 // Create a new comment on a post
 exports.comment_create = asyncHandler(async (req, res, next) => {
-  res.send(`COMMENT CREATE ON POST ID ${req.params.postId}`);
+  const comment = new Comment({
+    text: req.body.text,
+    timestamp: new Date(),
+    display_name: req.body.display_name,
+    post_id: req.params.postId,
+  });
+
+  await comment.save();
+  return res.send(comment);
 });
 
 // Delete a comment on a post
