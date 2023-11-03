@@ -1,4 +1,5 @@
 const Post = require('../models/post');
+const Comment = require('../models/comment');
 const User = require('../models/user');
 const asyncHandler = require('express-async-handler');
 
@@ -31,7 +32,9 @@ exports.post_create = asyncHandler(async (req, res, next) => {
 
 // Delete a blog post (and all associated comments)
 exports.post_delete = asyncHandler(async (req, res, next) => {
-  res.send(`POST DELETE ID ${req.params.postId}`);
+  const post = await Post.findByIdAndDelete(req.params.postId);
+  await Comment.deleteMany({ post_id: req.params.postId });
+  return res.send(post);
 });
 
 // Update a blog post
