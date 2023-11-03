@@ -9,8 +9,4 @@ const CommentSchema = new Schema({
   post_id: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
 });
 
-// CommentSchema.virtual('formatted_timestamp').get(function () {
-
-// });
-
 module.exports = mongoose.model('Comment', CommentSchema);

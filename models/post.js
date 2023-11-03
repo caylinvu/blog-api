@@ -10,8 +10,4 @@ const PostSchema = new Schema({
   isPublished: { type: Boolean, required: true },
 });
 
-// PostSchema.virtual('formatted_timestamp').get(function () {
-
-// });
-
 module.exports = mongoose.model('Post', PostSchema);

@@ -1,4 +1,5 @@
 const Post = require('../models/post');
+const User = require('../models/user');
 const asyncHandler = require('express-async-handler');
 
 // Display all api posts
@@ -15,7 +16,17 @@ exports.post_get = asyncHandler(async (req, res, next) => {
 
 // Create a new blog post
 exports.post_create = asyncHandler(async (req, res, next) => {
-  res.send('POST CREATE');
+  const user = await User.findOne().exec();
+  const post = new Post({
+    title: req.body.title,
+    text: req.body.text,
+    timestamp: new Date(),
+    author_id: user._id,
+    isPublished: req.body.isPublished,
+  });
+
+  await post.save();
+  return res.send(post);
 });
 
 // Delete a blog post (and all associated comments)
