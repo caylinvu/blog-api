@@ -7,7 +7,6 @@ require('dotenv').config();
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 
 const User = require('./models/user');
