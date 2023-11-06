@@ -45,7 +45,7 @@ app.post('/api/login', (req, res) => {
     password: 'hello',
   };
 
-  jwt.sign({ user: user }, process.env.secret_key, (err, token) => {
+  jwt.sign({ user: user }, process.env.secret_key, { expiresIn: '1 day' }, (err, token) => {
     res.json({
       token: token,
     });
