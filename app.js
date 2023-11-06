@@ -14,12 +14,25 @@ const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const postRouter = require('./routes/posts');
 
+const compression = require('compression');
+const helmet = require('helmet');
+
 const app = express();
+
+app.use(helmet());
+app.use(compression());
+
+const RateLimit = require('express-rate-limit');
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 30,
+});
+app.use(limiter);
 
 // mongoose connection setup
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
-const mongoDB = process.env.dev_db_url;
+const mongoDB = process.env.MONGODB_URI || process.env.dev_db_url;
 
 main().catch((err) => console.log(err));
 async function main() {
