@@ -4,9 +4,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 require('dotenv').config();
-
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
+const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 
+const User = require('./models/user');
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const postRouter = require('./routes/posts');
@@ -27,6 +31,26 @@ async function main() {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// passport setup
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const user = await User.findOne({ username: username });
+      if (!user) {
+        return done(null, false, { message: 'Username does not exist, please try again' });
+      }
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return done(null, false, { message: 'Incorrect password, please try again' });
+      }
+      return done(null, user);
+    } catch (err) {
+      return done(err);
+    }
+  }),
+);
+
+app.use(passport.initialize());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -38,18 +62,21 @@ app.use('/api', apiRouter);
 app.use('/api/posts', postRouter);
 
 app.post('/api/login', (req, res) => {
-  // Mock user
-  const user = {
-    id: 1,
-    username: 'cats4lyfe',
-    password: 'hello',
-  };
+  passport.authenticate('local', { session: false }, (err, user, info) => {
+    console.log(`ERROR: ${err}`);
+    console.log(`USER: ${user}`);
+    console.log(`INFO: ${JSON.stringify(info)}`);
 
-  jwt.sign({ user: user }, process.env.secret_key, { expiresIn: '1 day' }, (err, token) => {
-    res.json({
-      token: token,
-    });
-  });
+    if (err || !user) {
+      return res.status(400).json(info);
+    } else {
+      jwt.sign({ user: user }, process.env.secret_key, { expiresIn: '1 day' }, (err, token) => {
+        res.json({
+          token: token,
+        });
+      });
+    }
+  })(req, res);
 });
 
 // catch 404 and forward to error handler

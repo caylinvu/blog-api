@@ -12,18 +12,14 @@ function verifyToken(req, res, next) {
     // Verify token if defined
     jwt.verify(req.token, process.env.secret_key, (err, authData) => {
       if (err) {
-        const err = new Error('User is not authorized to perform this action');
-        err.status = 403;
-        return next(err);
+        res.sendStatus(403);
       } else {
         next();
       }
     });
   } else {
     // Forbidden if token is undefined
-    const err = new Error('Forbidden');
-    err.status = 403;
-    return next(err);
+    res.sendStatus(403);
   }
 }
 
