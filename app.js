@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 require('dotenv').config();
 
+const jwt = require('jsonwebtoken');
+
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const postRouter = require('./routes/posts');
@@ -34,6 +36,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 app.use('/api/posts', postRouter);
+
+app.post('/api/login', (req, res) => {
+  // Mock user
+  const user = {
+    id: 1,
+    username: 'cats4lyfe',
+    password: 'hello',
+  };
+
+  jwt.sign({ user: user }, process.env.secret_key, (err, token) => {
+    res.json({
+      token: token,
+    });
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
