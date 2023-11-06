@@ -63,16 +63,16 @@ app.use('/api/posts', postRouter);
 
 app.post('/api/login', (req, res) => {
   passport.authenticate('local', { session: false }, (err, user, info) => {
-    console.log(`ERROR: ${err}`);
-    console.log(`USER: ${user}`);
-    console.log(`INFO: ${JSON.stringify(info)}`);
-
     if (err || !user) {
       return res.status(400).json(info);
     } else {
       jwt.sign({ user: user }, process.env.secret_key, { expiresIn: '1 day' }, (err, token) => {
         res.json({
           token: token,
+          user: {
+            first_name: user.first_name,
+            last_name: user.last_name,
+          },
         });
       });
     }
