@@ -16,9 +16,11 @@ const postRouter = require('./routes/posts');
 
 const compression = require('compression');
 const helmet = require('helmet');
+const cors = require('cors');
 
 const app = express();
 
+app.use(cors());
 app.use(helmet());
 app.use(compression());
 
