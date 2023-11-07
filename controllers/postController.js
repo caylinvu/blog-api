@@ -5,7 +5,7 @@ const asyncHandler = require('express-async-handler');
 
 // Display all api posts
 exports.posts_get = asyncHandler(async (req, res, next) => {
-  const allPosts = await Post.find().exec();
+  const allPosts = await Post.find().populate('author_id', 'first_name last_name').exec();
   return res.send(allPosts);
 });
 
