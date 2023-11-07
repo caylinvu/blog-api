@@ -3,14 +3,14 @@ const asyncHandler = require('express-async-handler');
 
 // Display all api comments on post
 exports.comments_get = asyncHandler(async (req, res, next) => {
-  const allCommentsOnPost = await Comment.find({ post_id: req.params.postId }).exec();
+  const allCommentsOnPost = await Comment.find({ post: req.params.postId }).exec();
   return res.send(allCommentsOnPost);
 });
 
 // Display individual api comment on post
 exports.comment_get = asyncHandler(async (req, res, next) => {
   const comment = await Comment.findById(req.params.commentId).exec();
-  if (comment.post_id.toString() === req.params.postId) {
+  if (comment.post.toString() === req.params.postId) {
     return res.send(comment);
   } else {
     const err = new Error('Invalid "postId" provided in path');
@@ -25,7 +25,7 @@ exports.comment_create = asyncHandler(async (req, res, next) => {
     text: req.body.text,
     timestamp: new Date(),
     display_name: req.body.display_name,
-    post_id: req.params.postId,
+    post: req.params.postId,
   });
 
   await comment.save();
@@ -35,7 +35,7 @@ exports.comment_create = asyncHandler(async (req, res, next) => {
 // Delete a comment on a post
 exports.comment_delete = asyncHandler(async (req, res, next) => {
   const comment = await Comment.findById(req.params.commentId).exec();
-  if (comment.post_id.toString() === req.params.postId) {
+  if (comment.post.toString() === req.params.postId) {
     await Comment.findByIdAndDelete(req.params.commentId);
     return res.send(comment);
   } else {
@@ -48,12 +48,12 @@ exports.comment_delete = asyncHandler(async (req, res, next) => {
 // Update a comment on a post
 exports.comment_update = asyncHandler(async (req, res, next) => {
   const comment = await Comment.findById(req.params.commentId).exec();
-  if (comment.post_id.toString() === req.params.postId) {
+  if (comment.post.toString() === req.params.postId) {
     const updatedComment = new Comment({
       text: req.body.text,
       timestamp: comment.timestamp,
       display_name: comment.display_name,
-      post_id: comment.post_id,
+      post: comment.post,
       _id: req.params.commentId,
     });
 

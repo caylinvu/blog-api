@@ -5,7 +5,7 @@ const asyncHandler = require('express-async-handler');
 
 // Display all api posts
 exports.posts_get = asyncHandler(async (req, res, next) => {
-  const allPosts = await Post.find().populate('author_id', 'first_name last_name').exec();
+  const allPosts = await Post.find().populate('author', 'first_name last_name').exec();
   return res.send(allPosts);
 });
 
@@ -22,7 +22,7 @@ exports.post_create = asyncHandler(async (req, res, next) => {
     title: req.body.title,
     text: req.body.text,
     timestamp: new Date(),
-    author_id: user._id,
+    author: user._id,
     isPublished: req.body.isPublished,
   });
 
@@ -33,7 +33,7 @@ exports.post_create = asyncHandler(async (req, res, next) => {
 // Delete a blog post (and all associated comments)
 exports.post_delete = asyncHandler(async (req, res, next) => {
   const post = await Post.findByIdAndDelete(req.params.postId);
-  await Comment.deleteMany({ post_id: req.params.postId });
+  await Comment.deleteMany({ post: req.params.postId });
   return res.send(post);
 });
 
@@ -44,7 +44,7 @@ exports.post_update = asyncHandler(async (req, res, next) => {
     title: req.body.title,
     text: req.body.text,
     timestamp: new Date(),
-    author_id: user._id,
+    author: user._id,
     isPublished: req.body.isPublished,
     _id: req.params.postId,
   });
