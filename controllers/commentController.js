@@ -3,7 +3,9 @@ const asyncHandler = require('express-async-handler');
 
 // Display all api comments on post
 exports.comments_get = asyncHandler(async (req, res, next) => {
-  const allCommentsOnPost = await Comment.find({ post: req.params.postId }).exec();
+  const allCommentsOnPost = await Comment.find({ post: req.params.postId })
+    .sort({ timestamp: -1 })
+    .exec();
   return res.send(allCommentsOnPost);
 });
 
