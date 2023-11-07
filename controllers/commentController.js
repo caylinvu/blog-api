@@ -37,7 +37,7 @@ exports.comment_create = asyncHandler(async (req, res, next) => {
   });
 
   await comment.save();
-  res.end();
+  return res.send(comment);
 });
 
 // Delete a comment on a post
