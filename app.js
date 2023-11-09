@@ -20,7 +20,12 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: ['https://blog-client-steel.vercel.app', 'https://blog-author-client.vercel.app'],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(compression());
 
